@@ -7,5 +7,7 @@
   "author": "Kyle Seongwoo Jun",
   "license": "MIT",
   "repository": "kyle-seongwoo-jun/hyper-background-image.git",
-  "dependencies": {}
+  "dependencies": {
+    "fast-average-color-node": "^2.1.0"
+  }
 }

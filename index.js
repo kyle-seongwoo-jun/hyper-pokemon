@@ -1,4 +1,5 @@
 const fs = require("fs");
+const { getAverageColor } = require("fast-average-color-node");
 
 function getRandomFile(dir) {
   var files = fs
@@ -9,12 +10,8 @@ function getRandomFile(dir) {
   return dir + "/" + files[i];
 }
 
-function css(config) {
-  if (!config.pokemon.folder) return config.css;
-
-  var file = getRandomFile(config.pokemon.folder);
+function css(file) {
   return `
-    ${config.css || ""}
     .terms_terms {
       background-image: url("file://${file}");
       background-position: center;
@@ -24,12 +21,35 @@ function css(config) {
   `;
 }
 
-exports.decorateConfig = (config) => {
-  if (!config.pokemon) return config;
+exports.middleware = (store) => (next) => (action) => {
+  if (action.type === "CONFIG_LOAD" || action.type === "CONFIG_RELOAD") {
+    const { config } = action;
+    if (!config.pokemon || !config.pokemon.folder) {
+      return next(action);
+    }
 
-  return Object.assign({}, config, {
-    css: css(config),
-  });
+    const file = getRandomFile(config.pokemon.folder);
+    getAverageColor(file, { algorithm: "dominant" }).then((result) => {
+      store.dispatch({
+        type: "SET_BACKGROUND_IMAGE",
+        backgroundColor: result.hex,
+        backgroundImage: file,
+      });
+    });
+  }
+
+  return next(action);
+};
+
+exports.reduceUI = (state, action) => {
+  switch (action.type) {
+    case "SET_BACKGROUND_IMAGE":
+      return state
+        .set("css", css(action.backgroundImage))
+        .set("backgroundColor", action.backgroundColor)
+        .set("borderColor", action.backgroundColor);
+  }
+  return state;
 };
 
 exports.getTermProps = (uid, parentProps, props) => {
