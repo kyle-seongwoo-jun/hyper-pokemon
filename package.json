@@ -1,0 +1,11 @@
+{
+  "name": "hyper-pokemon",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "main": "index.js",
+  "author": "Kyle Seongwoo Jun",
+  "license": "MIT",
+  "repository": "kyle-seongwoo-jun/hyper-background-image.git",
+  "dependencies": {}
+}
