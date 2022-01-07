@@ -9,7 +9,7 @@ function getRandomFile(dir) {
   return dir + "/" + files[i];
 }
 
-async function css(config) {
+function css(config) {
   if (!config.pokemon.folder) return config.css;
 
   var file = getRandomFile(config.pokemon.folder);
